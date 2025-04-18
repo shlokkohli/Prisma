@@ -1,13 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function POST(request : Request){
+export async function PUT(request : Request, { params } : { params: Promise<{ id : string }> }){
 
     try {
 
+        const {id} = await params;
+
         const {name, email} = await request.json();
-        
-        const user = await prisma.user.create({
+
+        const user = await prisma.user.update({
+            where: {
+                id : parseInt(id),
+            },
             data: {
                 name : name,
                 email : email
@@ -15,17 +20,17 @@ export async function POST(request : Request){
         })
 
         return NextResponse.json(
-            { message : "Welcome", user },
+            { message : 'updated user successfully' },
             { status : 200 }
         )
         
     } catch (error) {
 
         return NextResponse.json(
-            { message : "Some error occured", error },
+            { message : "Some occured in the params" },
             { status : 500 }
         )
         
     }
-
+    
 }
